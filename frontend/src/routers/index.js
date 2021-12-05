@@ -1,7 +1,8 @@
 import SMERouter from 'sme-router';
 const router = new SMERouter('root');
 
-import { signin,index } from '../controllers';
+import index  from '../controllers/index';
+import signin from '../controllers/signin'
 
 //做守卫，没有定义路由名字，进入任何路由
 //打开第一个页面
@@ -20,6 +21,7 @@ router.use((req) => {
         
     });
 })
+//这个非常重要，就是不太懂
 router.route('/',()=>{})
 
 router.route('/',signin(router))
