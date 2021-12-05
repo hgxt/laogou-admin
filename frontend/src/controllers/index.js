@@ -7,7 +7,9 @@ import pagination from '../components/pagination';
 import page from '../dataBus/page';
 
 import {addUser} from './users/add-user'
-
+import { usersList as usersListModel} from '../models/user-list';
+import { auth as authModel } from '../models/auth';
+import {userRemove as userRemoveModel}  from '../models/user-remove' 
 
 
 const htmlIndex = indexTpl({});
@@ -40,29 +42,21 @@ const _methods =() =>{
     })
 
     //删除事件绑定
-    $("#users-list").on('click', '.remove', function() { //不要写·箭头函数，this会不对
-        //    console.log($(this).data('id'))
-        $.ajax({
-            url: "/api/users",
-            type: 'delete',
-            headers:{
-                'X-Access-Token': localStorage.getItem('lg-token') || ''
-            },
-            data: {
-                id: $(this).data('id')
-            },
-            success() {
-                _loadData();
+    $("#users-list").on('click', '.remove',async function() { //不要写·箭头函数，this会不对
+        
+       let result =await userRemoveModel($(this).data('id'))
+       if(result.ret){
+        _loadData();
 
-                const lastPage = Math.ceil(dataList.length / pageSize) == page.curPage;
-                const leastOne = dataList.length % pageSize ==1;
-                const notPageFirst = page.curPage > 0
+        const lastPage = Math.ceil(dataList.length / pageSize) == page.curPage;
+        const leastOne = dataList.length % pageSize ==1;
+        const notPageFirst = page.curPage > 0
 
-                if(lastPage && leastOne && notPageFirst){
-                    page.setCurPage(page.curPage - 1)
-                }
-            }
-        })
+        if(lastPage && leastOne && notPageFirst){
+            page.setCurPage(page.curPage - 1)
+        }
+       }
+       
     })
 }
 
@@ -89,23 +83,14 @@ const _list = (pageNo) => {
 }
 
 //从后端加载到的数据
-const _loadData = () => {
-    //jq的ajax返回值是promise
-    $.ajax({
-        url: "/api/users",
-        // async:false,
-        dataType: 'json',
-        headers:{
-            'X-Access-Token': localStorage.getItem('lg-token') || ''
-        },
-        success(result) {
-            dataList = result.data;
-            //用户分页
-            pagination(result.data,pageSize);
-            //数据渲染
-            _list(page.curPage)
-        },
-    })
+const _loadData = async () => {
+   let result = await usersListModel()
+
+   dataList = result.data
+   //分页
+   pagination(result.data,pageSize)
+   //数据渲染
+   _list(page.curPage)
 }
 
 const index = (router) => {
@@ -130,23 +115,15 @@ const index = (router) => {
         //订阅事件
         _subscribe()
            
-        return (req, res, next) => {
-            //防止用户自己输入网址登录
-            $.ajax({
-                url: "/api/users/isAuth",
-                dataType: "json",
-                headers:{
-                    'X-Access-Token': localStorage.getItem('lg-token') || ''
-                },
-                success(result) {
-                    if(result.ret){
-                        loadIndex(res)
-                    }else{
-                        // console.log(result)
-                        router.go('/signin')
-                    }
-                },
-            });
+        return async(req, res, next) => {
+            let result = await authModel()
+            if(result.ret){
+                loadIndex(res)
+            }else{
+                // console.log(result)
+                router.go('/signin')
+            }
+
         }      
 };
 

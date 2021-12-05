@@ -1,27 +1,21 @@
 import singinTpl from '../views/signin.art';
+import {signin as signinModel} from '../models/signin'
 
 const htmlSignin = singinTpl({});
 
 const _handleSubmit = (router) => {
-    return (e) => {
+    return async(e) => {
         e.preventDefault();
-       
         const data = $("#signin").serialize();
-        $.ajax({
-            url:'/api/users/signin',
-            type:'post',
-            dataType:"json",
-            data,
-            success:function(res,textStatus,jqXHR){
-                //获取后端传到首部字段head上的token
-                const token = jqXHR.getResponseHeader('X-Access-Token')
-                //把token存在本地，方便下次请求使用
-                localStorage.setItem('lg-token',token)
-                  if(res.ret){
-                    router.go('/index');
-                  }
-            }
-        })
+        let {res,jqXHR} = await signinModel(data)
+        //获取后端传到首部字段head上的token
+        const token =jqXHR.getResponseHeader('X-Access-Token')
+        //把token存在本地，方便下次请求使用
+        localStorage.setItem('lg-token',token)
+          if(res.ret){
+            router.go('/index');
+          }
+        
     }
 };
 //用户登录
