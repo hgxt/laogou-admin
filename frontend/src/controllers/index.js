@@ -7,6 +7,8 @@ import usersListTpl from '../views/users-list.art';
 
 import pagination from '../components/pagination';
 
+import page from '../dataBus/page';
+
 
 const htmlIndex = indexTpl({});
 
@@ -24,7 +26,8 @@ const _signup = () => {
         url: "/api/users",
         data,
         success: function(response) {
-            console.log(response);
+            page.setCurPage(1)
+
             //渲染用户list
             _loadData()
         }
@@ -59,12 +62,12 @@ const _methods =() =>{
             success() {
                 _loadData();
 
-                const lastPage = Math.ceil(dataList.length / pageSize) == curPage;
+                const lastPage = Math.ceil(dataList.length / pageSize) == page.curPage;
                 const leastOne = dataList.length % pageSize ==1;
-                const notPageFirst = curPage > 0
+                const notPageFirst = page.curPage > 0
 
                 if(lastPage && leastOne && notPageFirst){
-                    curPage--;
+                    page.setCurPage(page.curPage - 1)
                 }
             }
         })
@@ -105,7 +108,7 @@ const _loadData = () => {
             //用户分页
             pagination(result.data,pageSize);
             //数据渲染
-            _list(curPage)
+            _list(page.curPage)
         },
     })
 }
