@@ -24,6 +24,9 @@ const _signup = () => {
     $.ajax({
         type: "post",
         url: "/api/users",
+        headers:{
+            'X-Access-Token': localStorage.getItem('lg-token') || ''
+        },
         data,
         success: function(response) {
             page.setCurPage(1)
@@ -39,15 +42,20 @@ const _methods =() =>{
     //登出事件绑定
     $("#users-signout").on('click',function(e){
     e.preventDefault()//关掉a链接的默认行为
-    $.ajax({
-        url:'/api/users/signout',
-        dataType:"json",
-        success(res){
-            if(res.ret){
-                location.reload();//刷新页面
-            }
-        }
-    })
+    localStorage.setItem('lg-token','')
+    location.reload()
+    // $.ajax({
+    //     url:'/api/users/signout',
+    //     dataType:"json",
+    //     headers:{
+    //         'X-Access-Token': localStorage.getItem('lg-token') || ''
+    //     },
+    //     success(res){
+    //         if(res.ret){
+    //             location.reload();//刷新页面
+    //         }
+    //     }
+    // })
     })
 
     //删除事件绑定
@@ -56,6 +64,9 @@ const _methods =() =>{
         $.ajax({
             url: "/api/users",
             type: 'delete',
+            headers:{
+                'X-Access-Token': localStorage.getItem('lg-token') || ''
+            },
             data: {
                 id: $(this).data('id')
             },
@@ -103,6 +114,9 @@ const _loadData = () => {
         url: "/api/users",
         // async:false,
         dataType: 'json',
+        headers:{
+            'X-Access-Token': localStorage.getItem('lg-token') || ''
+        },
         success(result) {
             dataList = result.data;
             //用户分页
@@ -139,6 +153,9 @@ const index = (router) => {
             $.ajax({
                 url: "/api/users/isAuth",
                 dataType: "json",
+                headers:{
+                    'X-Access-Token': localStorage.getItem('lg-token') || ''
+                },
                 success(result) {
                     if(result.ret){
                         loadIndex(res)

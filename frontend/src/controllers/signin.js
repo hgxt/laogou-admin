@@ -12,7 +12,11 @@ const _handleSubmit = (router) => {
             type:'post',
             dataType:"json",
             data,
-            success:function(res){
+            success:function(res,textStatus,jqXHR){
+                //获取后端传到首部字段head上的token
+                const token = jqXHR.getResponseHeader('X-Access-Token')
+                //把token存在本地，方便下次请求使用
+                localStorage.setItem('lg-token',token)
                   if(res.ret){
                     router.go('/index');
                   }

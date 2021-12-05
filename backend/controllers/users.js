@@ -4,7 +4,7 @@
 //载入数据库
 const usersModel = require('../models/users')
 
-const {hash,compare} = require('../utils/tools')
+const {hash,compare,sign,verify} = require('../utils/tools')
 
 // const randomstring = require('randomstring')
 
@@ -20,10 +20,16 @@ const signin = async (req,res,next) => {
         let {password:hash} = result;
         let compareResult = await compare(password,hash);
         if(compareResult){
-            //cookie-session
-            req.session.username = username
+            //-----------token---------------------------------------------
+            const token = sign(username)
+            //放到head
+            res.set('X-Access-Token',token)
+
+            //-----------cookie-session------------------------------------
+            // req.session.username = username
             // console.log(req.session)
-            // ---------------------------------------------
+
+            // --------------自己建一个session-------------------------------
             // const sessionId = randomstring.generate();
             //后端向前端种一个cookie,cookie只要域名不变，向后端做请求时，cookie会一直携带
             // res.set('Set-Cookie',`sessionId=${sessionId};Path=/;HttpOnly`);
@@ -122,19 +128,39 @@ const remove = async (req,res,next)=>{
  
 }
 const isAuth = async (req,res,next) => {
-    if(req.session.username){
+    //-----------token-----------------
+    let token = req.get('X-Access-Token')
+    
+    try{
+        let result = verify(token)
+        console.log(result)
         res.render('succ',{
             data:JSON.stringify({
-                username:req.session.username,
+                username: result.username
             })
         })
-    }else{
+    }catch(err){
         res.render('fail',{
-            data:JSON.stringify({
-                message:"请先登录"
-            })
-        })
+                    data:JSON.stringify({
+                        message:"请先登录"
+                    })
+                })
     }
+    
+//-----------session-cookie-----------------
+    // if(req.session.username){
+    //     res.render('succ',{
+    //         data:JSON.stringify({
+    //             username:req.session.username,
+    //         })
+    //     })
+    // }else{
+    //     res.render('fail',{
+    //         data:JSON.stringify({
+    //             message:"请先登录"
+    //         })
+    //     })
+    // }
 }
 
 
