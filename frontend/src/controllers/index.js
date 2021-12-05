@@ -1,13 +1,13 @@
 //处理逻辑
 import indexTpl from '../views/index.art';
-
 import usersTpl from '../views/users.art';
-
 import usersListTpl from '../views/users-list.art';
 
 import pagination from '../components/pagination';
-
 import page from '../dataBus/page';
+
+import {addUser} from './users/add-user'
+
 
 
 const htmlIndex = indexTpl({});
@@ -17,26 +17,7 @@ const pageSize = 3;
 let dataList = [];
 
 //用户注册
-const _signup = () => {
-    const $btnClose = $("#users-close");
-    //提交表单
-    const data = $('#users-form').serialize();
-    $.ajax({
-        type: "post",
-        url: "/api/users",
-        headers:{
-            'X-Access-Token': localStorage.getItem('lg-token') || ''
-        },
-        data,
-        success: function(response) {
-            page.setCurPage(1)
 
-            //渲染用户list
-            _loadData()
-        }
-    });
-    $btnClose.click()
-}
 //事件绑定方法
 const _methods =() =>{
     //登出事件绑定
@@ -83,15 +64,15 @@ const _methods =() =>{
             }
         })
     })
-
-    //用户添加模态框，点击保存，提交表单
-    $("#users-save").on('click', _signup)
 }
 
 //分页 subscribe订阅(观察者模式，trigger)
 const _subscribe = () =>{
   $('body').on('changeCurPage',(e,index)=>{
       _list(index);
+  })
+  $('body').on('addUser',(e) => {
+      _loadData()
   })
 }
 
@@ -137,6 +118,7 @@ const index = (router) => {
 
         //填充用户列表
         $('#content').html(usersTpl());
+        $('#add-user-btn').on('click',addUser)
 
         //页面事件绑定
         _methods()
@@ -167,13 +149,5 @@ const index = (router) => {
             });
         }      
 };
-// const index = (req,res,next)=>{
-//     res.render(htmlSignin);
-
-// }
-
-// const singin =(req,res,next)=>{
-//     res.render(htmlSignin)
-// }
 
 export default index
