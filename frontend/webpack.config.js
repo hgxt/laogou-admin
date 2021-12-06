@@ -25,12 +25,26 @@ module.exports = {
                     test: /\.art$/,
                     use: {
                       loader: 'art-template-loader',
+                      options:{
+                          escape: false
+                      }
                     }
                 },
                 {//css-loader解析css代码，style-loader将css代码处理到html上
                     test:/\.css$/,
                     loaders:["style-loader", "css-loader"]  
                 },
+                {
+                    test: /\.(png|jpg|gif)$/,
+                    use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                        limit: 8192,
+                        },
+                    },
+                    ],
+                }
 
             ]
                  },
