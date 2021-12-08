@@ -2,6 +2,9 @@ import indexTpl from '../views/index.art';
 import { auth as authModel } from '../models/auth';
 
 import img from '../assets/user2-160x160.jpg'
+import pageHeader from '../components/pageheader'
+
+import page from '../dataBus/page'
 
 const index = (router) => {
         
@@ -20,9 +23,23 @@ const index = (router) => {
 
                 //window resize ,让页面撑满整个屏幕
                 $(window, '.wrapper').resize();
+
+                //加载页面导航
+                pageHeader()
+
                 const $as = $('#sidebar-menu li:not(:first-child) a')
                 let hash = location.hash
-                $as.filter(`[href="${hash}"]`).parent().addClass('active').siblings().removeClass('active')
+                $as
+                .filter(`[href="${hash}"]`)
+                .parent()
+                .addClass('active')
+                .siblings().removeClass('active')
+
+                //是否重置page
+                
+
+                //当前url保存
+                page.setCurRoute(hash)
             }else{
                 router.go('/signin')
             }

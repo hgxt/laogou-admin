@@ -6,7 +6,7 @@
     <table class="table table-bordered">
       <tr>
         <th style="width: 15px">#</th>
-        <th style="width: 100px">公司logo</th>
+        <!-- <th style="width: 100px">公司logo</th> -->
         <th>公司名称</th>
         <th>职位名称</th>
         <th style="width: 150px">城市</th>

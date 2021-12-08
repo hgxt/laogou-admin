@@ -13,7 +13,7 @@ import {userRemove as userRemoveModel}  from '../../models/user-remove'
 
 
 let curPage = 1;
-const pageSize = 3;
+const pageSize =page.pageSize;
 let dataList = [];
 
 //用户注册
@@ -72,7 +72,7 @@ const _subscribe = () =>{
 const _list = (pageNo) => {
     //渲染用户list
     let strat = (pageNo - 1) * pageSize
-    console.log(dataList.slice(strat, strat + pageSize))
+    // console.log(dataList.slice(strat, strat + pageSize))
     $('#users-list').html(usersListTpl({
         
          data: dataList.slice(strat, strat + pageSize)
@@ -97,7 +97,7 @@ const index = (router) => {
         // $('#content').html(usersTpl());
         next()
         res.render(usersTpl())
-
+        //添加按钮的点击事件
         $('#add-user-btn').on('click',addUser)
 
         //页面事件绑定

@@ -22,8 +22,8 @@ const pagination = (data,pageSize) => {
     const htmlPage = usersListPageTpl({
         pageArry
     })
-    console.log(htmlPage)
     $('#users-page').html(htmlPage);
+    //点击时高亮
     _setPageActive(page.curPage)
 
     _bindEvent(data,pageSize);
@@ -31,8 +31,8 @@ const pagination = (data,pageSize) => {
 
 const _bindEvent = (data,pageSize) =>{
     //分页事件绑定
-    $("#users-page").on('click', "#users-page-list li:not(:first-child,:last-child)", function() {
-console.log(100)
+    //用户添加时出现两个，添加off?
+    $("#users-page").off('click').on('click', "#users-page-list li:not(:first-child,:last-child)", function() {
         //渲染第二页
         const index = $(this).index();
 
