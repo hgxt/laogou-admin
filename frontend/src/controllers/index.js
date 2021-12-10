@@ -36,10 +36,29 @@ const index = (router) => {
                 .siblings().removeClass('active')
 
                 //是否重置page
-                
 
                 //当前url保存
                 page.setCurRoute(hash)
+
+                //登出事件绑定
+                $("#users-signout").off('click').on('click',function(e){
+                    e.preventDefault()//关掉a链接的默认行为
+                    localStorage.setItem('lg-token','')
+                    location.reload()
+                    // $.ajax({
+                    //     url:'/api/users/signout',
+                    //     dataType:"json",
+                    //     headers:{
+                    //         'X-Access-Token': localStorage.getItem('lg-token') || ''
+                    //     },
+                    //     success(res){
+                    //         if(res.ret){
+                    //             location.reload();//刷新页面
+                    //         }
+                    //     }
+                    // })
+                    })
+
             }else{
                 router.go('/signin')
             }

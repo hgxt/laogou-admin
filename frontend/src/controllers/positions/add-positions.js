@@ -11,8 +11,8 @@ export const addPosition = () => {
     //提交表单
     const _save = async() => {
         try{
-            const data = $('#position-form').serialize()
-        let result = await positionAdd(data)
+            // const data = $('#position-form').serialize()
+        let result = await positionAdd()
         if(result.ret){
             //添加数据后渲染
             page.setCurPage(1)
