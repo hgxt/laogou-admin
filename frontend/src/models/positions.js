@@ -11,7 +11,7 @@ export const positionList = async () => {
         console.log(err)
     }
 }
-//添加
+//positionsAdd
 export const positionAdd = () =>{
 
         return new Promise((resolve,reject)=>{
@@ -45,4 +45,28 @@ export const positionAdd = () =>{
     // }catch(err){
     //     console.log(err)
     // }
+}
+//positionsUpdate
+export const positionsUpdate = () =>{
+
+    return new Promise((resolve,reject)=>{
+    //引入jquery.form插件后，有方法ajaxSubmit(),
+    //ajax的form表单无法上传二进制流的图片信息
+    var options = {
+        url:'/api/positions/update',
+        type:'patch',
+        dataType:'json',
+        resetForm:true,
+        timeout:30000,     //限制请求时间
+        success:(result)=>{
+            resolve(result)
+        },
+        error:(err)=>{
+            reject(err)
+        }
+    }
+    $('#position-form-update').ajaxSubmit(options)
+    })
+
+
 }

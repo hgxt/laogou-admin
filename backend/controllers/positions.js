@@ -39,6 +39,20 @@ exports.list = async (req,res,nex) => {
     }
 }
 
+//position listone
+exports.listone = async (req,res,next) => {
+    let result = await positionModel.listone(req.body.id)
+    if(result){
+        res.json(result)
+    }else{
+        res.render('fail',{
+            data:JSON.stringify({
+                message:'获取数据失败'
+            })
+        })
+    }
+}
+
 //position删除
 exports.remove = async (req,res,next)=>{
     let result = await positionModel.remove(req.body.id)
@@ -64,3 +78,32 @@ exports.remove = async (req,res,next)=>{
         })
     }
 }
+//position 修改
+
+exports.update = async (req,res,next) =>{
+    res.set('content-type','application/json;charset=utf-8')
+    const data = {
+        ...req.body,
+    }
+    //如果更新图片，就上传新的图片，如果没有更新，就保留原来的图片
+    if(req.companyLogo){
+        data['companyLogo']=req.companyLogo
+    }
+    let result = await positionModel.update(data)
+    if(result){
+        //修改position成功
+        res.render('succ',{
+            data:JSON.stringify({
+                message:'职位修改成功'
+            })
+        })
+    }else{
+        res.render('fail',{
+            data:JSON.stringify({
+                message:'职位修改失败'
+            })
+        })
+    }
+}
+
+//

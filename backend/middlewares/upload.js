@@ -1,8 +1,9 @@
 const path = require('path')
 const multer = require('multer')
 const mime = require('mime')
+const fs = require('fs')
 
-let filename = ''
+// let filename = ''
 const storage = multer.diskStorage({
     //上传文件的保存地址
     destination: function(req,file,cb){
@@ -11,7 +12,7 @@ const storage = multer.diskStorage({
     //文件命名
     filename:function(req,file,cb){
         let ext = mime.getExtension(file.mimetype)
-        filename = file.fieldname + '-' + Date.now() + '.' + ext
+        let filename = file.fieldname + '-' + Date.now() + '.' + ext
         cb(null,filename)
     }
 })
@@ -60,10 +61,28 @@ const uploadMiddleware = (req,res,next) => {
                     massage:err.message
                 })
             })
+        }else{
+             //一切都好
+        //更新图片后，将原来的图片删除
+        const {companyLogo_old} = req.body
+        console.log(companyLogo_old)
+        if(req.file && companyLogo_old){
+            console.log(req.file)
+            try{
+                fs.unlinkSync(path.join(__dirname,`../public/uploads/${companyLogo_old}`))
+                req.companyLogo = req.file.filename
+            }catch(err){
+                console.log(err)
+            }
+        }else if(!req.file && companyLogo_old){
+            req.companyLogo = companyLogo_old
+        }else{
+            req.companyLogo = req.file.filename
         }
-        //一切都好
-        req.companyLogo = filename
+        
         next()
+        }
+       
     })
 
 }

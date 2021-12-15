@@ -6,6 +6,7 @@ import pagination from '../../components/pagination'
 
 import  {positionList} from '../../models/positions'
 import {addPosition} from './add-positions'
+import {updatePosition,fillPositionsUpdateTpl} from './updata-position'
 
 import { auth as authModel } from '../../models/auth'
 import {remove} from '../common/index'
@@ -60,7 +61,7 @@ const listPositions = (router) => {
 
         //添加职位·
         addPosition()
-
+       
          //页面事件绑定
          remove({
             $box: $('#positions-list'),
@@ -68,6 +69,15 @@ const listPositions = (router) => {
             loadData:_loadData,
             state  //传递一个引用类型的值，在删除组件里能实时获取数据条数
         })
+        updatePosition()
+
+        $('#positions-list')
+          .off('click', '.positions-update')
+          .on('click', '.positions-update', function() {
+            //编辑职位
+            fillPositionsUpdateTpl($(this).data('id'))
+            
+          })
 
        }else{
         router.go('/signin')

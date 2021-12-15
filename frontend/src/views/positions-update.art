@@ -10,7 +10,7 @@
         <div class="box box-primary">
           <!-- form start -->
           <form role="form" enctype="multipart/form-data" id="position-form-update">
-            
+           
           </form>
         </div>
         <!-- /.box -->
